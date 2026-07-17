@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/documents")
 public class DocumentController {
-
     private final DocumentService documentService;
 
     public DocumentController(DocumentService documentService) {

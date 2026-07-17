@@ -12,33 +12,32 @@ import java.util.List;
 
 @Service
 public class DocumentService {
-
     private final StudyDocumentRepository documentRepository;
     private final TextChunkingService textChunkingService;
+    private final VectorIndexingService vectorIndexingService;
 
     public DocumentService(
             StudyDocumentRepository documentRepository,
-            TextChunkingService textChunkingService
-    ) {
+            TextChunkingService textChunkingService,
+            VectorIndexingService vectorIndexingService) {
         this.documentRepository = documentRepository;
         this.textChunkingService = textChunkingService;
+        this.vectorIndexingService = vectorIndexingService;
     }
 
     public StudyDocument uploadTextDocument(MultipartFile file) {
         try {
             String filename = file.getOriginalFilename();
             String content = new String(file.getBytes(), StandardCharsets.UTF_8);
-
             List<String> chunks = textChunkingService.splitIntoChunks(content);
-
             StudyDocument document = new StudyDocument(filename);
-
             for (int i = 0; i < chunks.size(); i++) {
                 DocumentChunk chunk = new DocumentChunk(i, chunks.get(i));
                 document.addChunk(chunk);
             }
-
-            return documentRepository.save(document);
+            StudyDocument savedDocument = documentRepository.saveAndFlush(document);
+            vectorIndexingService.indexDocument(savedDocument);
+            return savedDocument;
         } catch (IOException e) {
             throw new RuntimeException("Failed to read uploaded file", e);
         }

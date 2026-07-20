@@ -6,5 +6,4 @@ public record SearchResultResponse(
         Long documentId,
         Long chunkId,
         Integer chunkIndex
-) {
-}
+) {}

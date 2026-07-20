@@ -1,7 +1,7 @@
 package com.upjs.studydocs.controller;
 
 import com.upjs.studydocs.dto.DocumentResponse;
-import com.upjs.studydocs.entity.StudyDocument;
+import com.upjs.studydocs.model.StudyDocument;
 import com.upjs.studydocs.service.DocumentService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +21,14 @@ public class DocumentController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public DocumentResponse uploadDocument(@RequestParam("file") MultipartFile file) {
         StudyDocument document = documentService.uploadTextDocument(file);
-        return DocumentResponse.fromEntity(document);
+        return DocumentResponse.fromModel(document);
     }
 
     @GetMapping
     public List<DocumentResponse> getDocuments() {
         return documentService.findAllDocuments()
                 .stream()
-                .map(DocumentResponse::fromEntity)
+                .map(DocumentResponse::fromModel)
                 .toList();
     }
 }

@@ -29,8 +29,7 @@ public class ChatService {
                         """.formatted(
                         source.filename(),
                         source.chunkIndex(),
-                        source.content()
-                ))
+                        source.content()))
                 .collect(Collectors.joining("\n---\n"));
         String answer = chatClient.prompt()
                 .system("""

@@ -1,7 +1,7 @@
 package com.upjs.studydocs.service;
 
-import com.upjs.studydocs.entity.DocumentChunk;
-import com.upjs.studydocs.entity.StudyDocument;
+import com.upjs.studydocs.model.DocumentChunk;
+import com.upjs.studydocs.model.StudyDocument;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class VectorIndexingService {
     }
 
     public void indexDocument(StudyDocument studyDocument) {
-        List<Document> vectorDocuments = studyDocument.getChunks()
+        List<Document> vectorDocuments = studyDocument.chunks()
                 .stream()
                 .map(chunk -> toVectorDocument(studyDocument, chunk))
                 .toList();
@@ -28,16 +28,20 @@ public class VectorIndexingService {
     }
 
     private Document toVectorDocument(StudyDocument studyDocument, DocumentChunk chunk) {
-        String stableIdSource = "document-" + studyDocument.getId() + "-chunk-" + chunk.getId();
-        String uuid = UUID.nameUUIDFromBytes(stableIdSource.getBytes(StandardCharsets.UTF_8)).toString();
+        String stableIdSource = "document-" + studyDocument.id() + "-chunk-" + chunk.id();
+
+        String uuid = UUID.nameUUIDFromBytes(
+                stableIdSource.getBytes(StandardCharsets.UTF_8)
+        ).toString();
+
         return Document.builder()
                 .id(uuid)
-                .text(chunk.getContent())
+                .text(chunk.content())
                 .metadata(Map.of(
-                        "documentId", studyDocument.getId(),
-                        "chunkId", chunk.getId(),
-                        "filename", studyDocument.getFilename(),
-                        "chunkIndex", chunk.getChunkIndex()
+                        "documentId", studyDocument.id(),
+                        "chunkId", chunk.id(),
+                        "filename", studyDocument.filename(),
+                        "chunkIndex", chunk.chunkIndex()
                 ))
                 .build();
     }

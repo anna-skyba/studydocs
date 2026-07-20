@@ -1,6 +1,6 @@
 package com.upjs.studydocs.dto;
 
-import com.upjs.studydocs.entity.StudyDocument;
+import com.upjs.studydocs.model.StudyDocument;
 
 import java.time.LocalDateTime;
 
@@ -10,12 +10,12 @@ public record DocumentResponse(
         LocalDateTime uploadedAt,
         int chunksCount
 ) {
-    public static DocumentResponse fromEntity(StudyDocument document) {
+    public static DocumentResponse fromModel(StudyDocument document) {
         return new DocumentResponse(
-                document.getId(),
-                document.getFilename(),
-                document.getUploadedAt(),
-                document.getChunks().size()
+                document.id(),
+                document.filename(),
+                document.uploadedAt(),
+                document.chunks().size()
         );
     }
 }

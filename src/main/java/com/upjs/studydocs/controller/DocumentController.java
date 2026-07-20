@@ -31,4 +31,9 @@ public class DocumentController {
                 .map(DocumentResponse::fromModel)
                 .toList();
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteDocument(@PathVariable Long id) {
+        documentService.deleteDocument(id);
+    }
 }

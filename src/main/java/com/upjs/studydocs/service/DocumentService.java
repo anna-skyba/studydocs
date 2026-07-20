@@ -1,10 +1,13 @@
 package com.upjs.studydocs.service;
 
 import com.upjs.studydocs.dao.DocumentDao;
+import com.upjs.studydocs.dao.VectorStoreDao;
 import com.upjs.studydocs.model.DocumentChunk;
 import com.upjs.studydocs.model.StudyDocument;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +18,19 @@ public class DocumentService {
     private final TextChunkingService textChunkingService;
     private final VectorIndexingService vectorIndexingService;
     private final PdfTextExtractorService pdfTextExtractorService;
+    private final VectorStoreDao vectorStoreDao;
 
     public DocumentService(
             DocumentDao documentDao,
             TextChunkingService textChunkingService,
             VectorIndexingService vectorIndexingService,
-            PdfTextExtractorService pdfTextExtractorService) {
+            PdfTextExtractorService pdfTextExtractorService,
+            VectorStoreDao vectorStoreDao) {
         this.documentDao = documentDao;
         this.textChunkingService = textChunkingService;
         this.vectorIndexingService = vectorIndexingService;
         this.pdfTextExtractorService = pdfTextExtractorService;
+        this.vectorStoreDao = vectorStoreDao;
     }
 
     public StudyDocument uploadDocument(MultipartFile file) {
@@ -44,5 +50,14 @@ public class DocumentService {
 
     public List<StudyDocument> findAllDocuments() {
         return documentDao.findAllDocuments();
+    }
+
+    public void deleteDocument(Long documentId) {
+        if (!documentDao.existsById(documentId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found");
+        }
+        vectorStoreDao.deleteVectorsByDocumentId(documentId);
+        documentDao.deleteChunksByDocumentId(documentId);
+        documentDao.deleteDocumentById(documentId);
     }
 }

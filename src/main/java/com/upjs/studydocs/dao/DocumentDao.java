@@ -99,4 +99,30 @@ public class DocumentDao {
                 documentId
         );
     }
+
+    public boolean existsById(Long documentId) {
+        String sql = """
+            SELECT COUNT(*)
+            FROM study_documents
+            WHERE id = ?
+            """;
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, documentId);
+        return count != null && count > 0;
+    }
+
+    public void deleteChunksByDocumentId(Long documentId) {
+        String sql = """
+            DELETE FROM document_chunks
+            WHERE document_id = ?
+            """;
+        jdbcTemplate.update(sql, documentId);
+    }
+
+    public void deleteDocumentById(Long documentId) {
+        String sql = """
+            DELETE FROM study_documents
+            WHERE id = ?
+            """;
+        jdbcTemplate.update(sql, documentId);
+    }
 }

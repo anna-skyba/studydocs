@@ -60,4 +60,9 @@ public class DocumentService {
         documentDao.deleteChunksByDocumentId(documentId);
         documentDao.deleteDocumentById(documentId);
     }
+
+    public StudyDocument findDocumentById(Long documentId) {
+        return documentDao.findDocumentById(documentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found"));
+    }
 }

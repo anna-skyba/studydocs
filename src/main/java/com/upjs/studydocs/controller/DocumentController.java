@@ -1,5 +1,6 @@
 package com.upjs.studydocs.controller;
 
+import com.upjs.studydocs.dto.DocumentDetailsResponse;
 import com.upjs.studydocs.dto.DocumentResponse;
 import com.upjs.studydocs.model.StudyDocument;
 import com.upjs.studydocs.service.DocumentService;
@@ -35,5 +36,11 @@ public class DocumentController {
     @DeleteMapping("/{id}")
     public void deleteDocument(@PathVariable Long id) {
         documentService.deleteDocument(id);
+    }
+
+    @GetMapping("/{id}")
+    public DocumentDetailsResponse getDocumentById(@PathVariable Long id) {
+        StudyDocument document = documentService.findDocumentById(id);
+        return DocumentDetailsResponse.fromModel(document);
     }
 }

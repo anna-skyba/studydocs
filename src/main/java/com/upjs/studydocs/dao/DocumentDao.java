@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class DocumentDao {
@@ -124,5 +125,22 @@ public class DocumentDao {
             WHERE id = ?
             """;
         jdbcTemplate.update(sql, documentId);
+    }
+
+    public Optional<StudyDocument> findDocumentById(Long documentId) {
+        String sql = """
+            SELECT id, filename, uploaded_at
+            FROM study_documents
+            WHERE id = ?
+            """;
+        List<StudyDocument> documents = jdbcTemplate.query(
+                sql,
+                (rs, rowNum) -> {
+                    Long id = rs.getLong("id");
+                    List<DocumentChunk> chunks = findChunksByDocumentId(id);
+                    return new StudyDocument(id, rs.getString("filename"), rs.getTimestamp("uploaded_at").toLocalDateTime(), chunks);
+                },
+                documentId);
+        return documents.stream().findFirst();
     }
 }

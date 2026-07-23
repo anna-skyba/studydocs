@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyDocs AI</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="app">
+    <header class="header">
+        <div>
+            <h1>StudyDocs AI</h1>
+            <p>Chat with uploaded university PDF documents</p>
+        </div>
+    </header>
+
+    <main class="layout">
+        <section class="panel documents-panel">
+            <h2>Documents</h2>
+
+            <div class="upload-box">
+                <input id="fileInput" class="file-input" type="file" accept="application/pdf">
+
+                <label for="fileInput" class="file-picker">
+                    Choose PDF
+                </label>
+
+                <p id="selectedFileName" class="selected-file">
+                    No file selected
+                </p>
+
+                <button id="uploadButton" type="button">Upload PDF</button>
+            </div>
+
+            <div id="documentsList" class="document-list">
+                <p class="empty-state">Loading documents...</p>
+            </div>
+        </section>
+
+        <section class="panel chat-panel">
+            <div class="panel-title-row">
+                <h2>Chat</h2>
+                <button id="clearChatButton" type="button" class="secondary">Clear chat</button>
+            </div>
+
+            <div id="chatBox" class="chat-box">
+                <div class="message assistant">
+                    Upload PDFs and ask questions about them.
+                </div>
+            </div>
+
+            <div class="chat-form">
+                <input id="questionInput" type="text" placeholder="Ask a question...">
+                <button id="sendButton" type="button">Send</button>
+            </div>
+
+            <div class="sources">
+                <h3>Sources</h3>
+                <div id="sourcesList">
+                    <p>No sources yet.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="/script.js"></script>
+</body>
+</html>

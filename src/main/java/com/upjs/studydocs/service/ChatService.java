@@ -19,6 +19,20 @@ public class ChatService {
     }
 
     public ChatAnswerResponse ask(String question) {
+        if (isSmallTalk(question)) {
+            String answer = chatClient.prompt()
+                    .system("""
+                        You are a friendly university document assistant.
+                        Answer short conversational messages naturally.
+                        Keep the answer brief.
+                        """)
+                    .user(question)
+                    .call()
+                    .content();
+
+            return new ChatAnswerResponse(answer, List.of());
+        }
+
         List<SearchResultResponse> sources = semanticSearchService.search(question);
         String context = sources.stream()
                 .map(source -> """
@@ -56,5 +70,19 @@ public class ChatService {
                 .call()
                 .content();
         return new ChatAnswerResponse(answer, sources);
+    }
+
+    private boolean isSmallTalk(String question) {
+        String normalizedQuestion = question
+                .toLowerCase()
+                .trim();
+
+        return normalizedQuestion.equals("hello")
+                || normalizedQuestion.equals("hi")
+                || normalizedQuestion.equals("hey")
+                || normalizedQuestion.equals("thanks")
+                || normalizedQuestion.equals("thank you")
+                || normalizedQuestion.equals("good morning")
+                || normalizedQuestion.equals("good evening");
     }
 }

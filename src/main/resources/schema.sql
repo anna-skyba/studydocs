@@ -14,3 +14,14 @@ CREATE TABLE IF NOT EXISTS document_chunks (
     REFERENCES study_documents(id)
     ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS document_files (
+    document_id BIGINT PRIMARY KEY,
+    content_type VARCHAR(100) NOT NULL,
+    file_size BIGINT NOT NULL,
+    data BYTEA NOT NULL,
+    CONSTRAINT fk_document_file
+    FOREIGN KEY (document_id)
+    REFERENCES study_documents(id)
+    ON DELETE CASCADE
+);

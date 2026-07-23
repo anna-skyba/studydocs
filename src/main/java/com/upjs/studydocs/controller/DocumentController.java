@@ -2,9 +2,12 @@ package com.upjs.studydocs.controller;
 
 import com.upjs.studydocs.dto.DocumentDetailsResponse;
 import com.upjs.studydocs.dto.DocumentResponse;
+import com.upjs.studydocs.model.DocumentFile;
 import com.upjs.studydocs.model.StudyDocument;
 import com.upjs.studydocs.service.DocumentService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,5 +45,14 @@ public class DocumentController {
     public DocumentDetailsResponse getDocumentById(@PathVariable Long id) {
         StudyDocument document = documentService.findDocumentById(id);
         return DocumentDetailsResponse.fromModel(document);
+    }
+
+    @GetMapping("/{id}/file")
+    public ResponseEntity<byte[]> getDocumentFile(@PathVariable Long id) {
+        DocumentFile documentFile = documentService.findDocumentFileById(id);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, documentFile.contentType())
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+                .body(documentFile.data());
     }
 }
